@@ -1,14 +1,6 @@
 # myNotes-api
 
-Simple personal blog REST API built with Express.js and MongoDB.
-
-Designed for:
-- solo admin
-- markdown content
-- anonymous comments
-- local image upload
-- minimal authentication
-- simple architecture (no overengineering)
+Minimal personal writing platform API built with Express.js, MongoDB, markdown content, anonymous comments, and local image uploads.
 
 ---
 
@@ -16,13 +8,16 @@ Designed for:
 
 - Express.js REST API
 - MongoDB + Mongoose
-- Cookie-based admin session
+- Cookie-based admin authentication
 - Markdown-ready content
 - Anonymous comments
-- Local image upload
+- Local image uploads
 - Category filter
 - Tag filter
 - Draft & publish system
+- Simple architecture
+- No JWT
+- No user system
 
 ---
 
@@ -74,7 +69,28 @@ PORT=3000
 
 MONGO_URI=mongodb://localhost:27017/blog
 
-ADMIN_PASSWORD=superrahasia
+ADMIN_PASSWORD=your_password
+```
+
+---
+
+## Create `.gitignore`
+
+```gitignore
+node_modules
+
+.env
+
+uploads
+```
+
+---
+
+## Create `uploads` folder
+
+```txt
+myNotes-api/
+├── uploads/
 ```
 
 ---
@@ -98,8 +114,14 @@ myNotes-api/
 │   ├── middleware/
 │   ├── models/
 │   ├── routes/
+│   │   ├── adminRoutes.js
+│   │   ├── commentRoutes.js
+│   │   ├── postRoutes.js
+│   │   └── index.js
 │   └── index.js
 ├── .env
+├── .env.example
+├── .gitignore
 ├── package.json
 └── README.md
 ```
@@ -109,7 +131,7 @@ myNotes-api/
 # Authentication
 
 Admin authentication uses:
-- simple password login
+- password login
 - httpOnly cookie session
 
 No JWT or user database required.
@@ -118,7 +140,7 @@ No JWT or user database required.
 
 # API Endpoints
 
-## Public
+## Public Routes
 
 ### Get all posts
 
@@ -182,7 +204,15 @@ Body:
 
 ---
 
-# Admin
+### Get comments by post
+
+```http
+GET /comments/:postId
+```
+
+---
+
+# Admin Routes
 
 ## Login
 
@@ -194,7 +224,7 @@ Body:
 
 ```json
 {
-  "password": "superrahasia"
+  "password": "your_password"
 }
 ```
 
@@ -299,6 +329,7 @@ Images are served statically via:
 
 ---
 
+
 # Notes
 
 This project intentionally avoids:
@@ -312,7 +343,3 @@ Goal:
 simple and maintainable personal writing platform.
 
 ---
-
-# License
-
-MIT
