@@ -67,10 +67,12 @@ router.post(
   upload.single("image"),
 
   (req, res) => {
+    const baseUrl =
+      process.env.BASE_URL ||
+      `${req.protocol}://${req.get("host")}`
+
     res.json({
-      url:
-        "/uploads/" +
-        req.file.filename,
+      url: `${baseUrl}/uploads/${req.file.filename}`,
     })
   }
 )
