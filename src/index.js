@@ -9,7 +9,8 @@ import { setupRoutes } from "./routes/index.js"
 
 dotenv.config()
 
-await connectDB()
+// SQLite is synchronous — no await needed
+connectDB()
 
 const app = express()
 
@@ -19,7 +20,6 @@ app.use(cors({
   allowedHeaders: ['Content-Type', 'x-admin-password'],
   methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
 }))
-
 
 app.use(express.json())
 

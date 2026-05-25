@@ -2,7 +2,7 @@ import Post from "../models/Post.js"
 
 export async function createPost(req, res) {
   try {
-    const post = await Post.create(req.body)
+    const post = Post.create(req.body)
 
     res.status(201).json(post)
   } catch (err) {
@@ -14,11 +14,10 @@ export async function createPost(req, res) {
 
 export async function getPosts(req, res) {
   try {
-    const posts = await Post.find({
-      isPublished: true,
-    }).sort({
-      createdAt: -1,
-    })
+    const posts = Post.find(
+      { isPublished: true },
+      { sort: "createdAt", order: "DESC" }
+    )
 
     res.json(posts)
   } catch (err) {
@@ -30,7 +29,7 @@ export async function getPosts(req, res) {
 
 export async function getPostBySlug(req, res) {
   try {
-    const post = await Post.findOne({
+    const post = Post.findOne({
       slug: req.params.slug,
       isPublished: true,
     })
@@ -51,7 +50,7 @@ export async function getPostBySlug(req, res) {
 
 export async function getPostsByCategory(req, res) {
   try {
-    const posts = await Post.find({
+    const posts = Post.find({
       category: req.params.category,
       isPublished: true,
     })
@@ -66,8 +65,8 @@ export async function getPostsByCategory(req, res) {
 
 export async function getPostsByTag(req, res) {
   try {
-    const posts = await Post.find({
-      tags: req.params.tag,
+    const posts = Post.find({
+      tag: req.params.tag,
       isPublished: true,
     })
 
@@ -81,7 +80,7 @@ export async function getPostsByTag(req, res) {
 
 export async function deletePost(req, res) {
   try {
-    await Post.findByIdAndDelete(req.params.id)
+    Post.findByIdAndDelete(req.params.id)
 
     res.json({
       message: "deleted",

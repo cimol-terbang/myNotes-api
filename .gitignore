@@ -3,3 +3,8 @@ node_modules
 .env
 
 uploads
+
+# SQLite database files
+data/*.db
+data/*.db-shm
+data/*.db-wal

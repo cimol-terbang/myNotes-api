@@ -1,28 +1,41 @@
-import mongoose from "mongoose"
+import { db } from "../config/db.js"
 
-const commentSchema = new mongoose.Schema({
-  postId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Post",
-    required: true,
+function parseComment(row) {
+  if (!row) return null
+  return { ...row }
+}
+
+function parseComments(rows) {
+  return rows.map(parseComment)
+}
+
+const Comment = {
+  create({ postId, name, content }) {
+    const stmt = db.prepare(`
+      INSERT INTO comments (postId, name, content)
+      VALUES (?, ?, ?)
+    `)
+    const info = stmt.run(postId, name, content)
+    const row = db
+      .prepare("SELECT * FROM comments WHERE id = ?")
+      .get(info.lastInsertRowid)
+    return parseComment(row)
   },
 
-  name: {
-    type: String,
-    required: true,
-  },
+  find({ postId } = {}, { sort = "createdAt", order = "DESC" } = {}) {
+    let query = "SELECT * FROM comments WHERE 1=1"
+    const params = []
 
-  content: {
-    type: String,
-    required: true,
-  },
+    if (postId !== undefined) {
+      query += " AND postId = ?"
+      params.push(postId)
+    }
 
-  createdAt: {
-    type: Date,
-    default: Date.now,
-  },
-})
+    query += ` ORDER BY ${sort} ${order}`
 
-const Comment = mongoose.model("Comment", commentSchema)
+    const rows = db.prepare(query).all(...params)
+    return parseComments(rows)
+  },
+}
 
 export default Comment
