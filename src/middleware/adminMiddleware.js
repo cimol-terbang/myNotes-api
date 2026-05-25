@@ -3,8 +3,11 @@ export function adminMiddleware(
   res,
   next
 ) {
+  // Support both cookie-based session and header-based auth
+  // Header auth is used for cross-origin requests where cookies can't be set
   const session =
-    req.cookies.admin_session
+    req.cookies.admin_session ||
+    req.headers["x-admin-password"]
 
   if (
     session !==
