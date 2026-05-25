@@ -33,8 +33,11 @@ router.post(
       process.env.ADMIN_PASSWORD,
       {
         httpOnly: true,
-        secure: false,
-        sameSite: "lax",
+        // Use secure cookies in production (HTTPS) and allow cross-site cookie in development
+        secure: process.env.NODE_ENV === "production",
+        sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+        // Allow credentials to be sent with cross-origin requests
+        // (CORS middleware already sets credentials: true)
       }
     )
 
