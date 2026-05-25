@@ -13,7 +13,13 @@ await connectDB()
 
 const app = express()
 
-app.use(cors({ origin: process.env.FRONTEND_ORIGIN, credentials: true }))
+app.use(cors({
+  origin: process.env.FRONTEND_ORIGIN,
+  credentials: true,
+  allowedHeaders: ['Content-Type', 'x-admin-password'],
+  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+}))
+
 
 app.use(express.json())
 
