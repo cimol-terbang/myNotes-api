@@ -81,13 +81,29 @@ export async function getPostsByTag(req, res) {
 export async function deletePost(req, res) {
   try {
     Post.findByIdAndDelete(req.params.id)
-
-    res.json({
-      message: "deleted",
-    })
+    res.json({ message: "deleted" })
   } catch (err) {
-    res.status(500).json({
-      error: err.message,
-    })
+    res.status(500).json({ error: err.message })
+  }
+}
+
+export async function updatePost(req, res) {
+  try {
+    const post = Post.findById(req.params.id)
+    if (!post) return res.status(404).json({ error: "post not found" })
+
+    const updated = Post.findByIdAndUpdate(req.params.id, req.body)
+    res.json(updated)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
+  }
+}
+
+export async function getAllPostsAdmin(req, res) {
+  try {
+    const posts = Post.find({}, { sort: "createdAt", order: "DESC" })
+    res.json(posts)
+  } catch (err) {
+    res.status(500).json({ error: err.message })
   }
 }

@@ -14,11 +14,22 @@ connectDB()
 
 const app = express()
 
+const allowedOrigins = process.env.FRONTEND_ORIGIN
+  ? process.env.FRONTEND_ORIGIN.split(',').map(o => o.trim())
+  : []
+
 app.use(cors({
-  origin: process.env.FRONTEND_ORIGIN,
+  origin: (origin, callback) => {
+    // allow requests with no origin (e.g. curl, mobile apps)
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true)
+    } else {
+      callback(new Error(`CORS: origin ${origin} not allowed`))
+    }
+  },
   credentials: true,
   allowedHeaders: ['Content-Type', 'x-admin-password'],
-  methods: ['GET', 'POST', 'DELETE', 'OPTIONS'],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
 }))
 
 app.use(express.json())

@@ -82,6 +82,26 @@ const Post = {
   findByIdAndDelete(id) {
     db.prepare("DELETE FROM posts WHERE id = ?").run(id)
   },
+
+  findByIdAndUpdate(id, fields) {
+    const allowed = ['title', 'slug', 'content', 'category', 'tags', 'isPublished']
+    const updates = []
+    const params = []
+
+    for (const key of allowed) {
+      if (fields[key] === undefined) continue
+      updates.push(`${key} = ?`)
+      if (key === 'tags') params.push(JSON.stringify(fields[key]))
+      else if (key === 'isPublished') params.push(fields[key] ? 1 : 0)
+      else params.push(fields[key])
+    }
+
+    if (updates.length === 0) return Post.findById(id)
+
+    params.push(id)
+    db.prepare(`UPDATE posts SET ${updates.join(', ')} WHERE id = ?`).run(...params)
+    return Post.findById(id)
+  },
 }
 
 export default Post

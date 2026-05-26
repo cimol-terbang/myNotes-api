@@ -1,4 +1,11 @@
 import multer from "multer"
+import fs from "fs"
+import path from "path"
+
+const uploadDir = "uploads"
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir, { recursive: true })
+}
 
 const storage = multer.diskStorage({
   destination(req, file, cb) {
@@ -11,9 +18,12 @@ const storage = multer.diskStorage({
       "-" +
       Math.round(Math.random() * 1e9)
 
+    // Sanitize the original file name to prevent space or parenthesis issues
+    const sanitizedName = file.originalname.replace(/[^a-zA-Z0-9.\-_]/g, "_")
+
     cb(
       null,
-      unique + "-" + file.originalname
+      unique + "-" + sanitizedName
     )
   },
 })
