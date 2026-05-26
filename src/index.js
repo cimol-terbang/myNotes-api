@@ -1,7 +1,8 @@
-import express from "express"
-import dotenv from "dotenv"
-import cors from "cors"
-import cookieParser from "cookie-parser"
+import express from "express";
+import { getUploadsDir } from "./utils/uploads.js";
+import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
 
 import { connectDB } from "./config/db.js"
 
@@ -38,7 +39,7 @@ app.use(cookieParser())
 
 app.use(
   "/uploads",
-  express.static("uploads")
+  express.static(getUploadsDir())
 )
 
 setupRoutes(app)

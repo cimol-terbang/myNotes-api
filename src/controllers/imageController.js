@@ -1,10 +1,10 @@
 import fs from "fs"
 import path from "path"
 import { fileURLToPath } from "url"
-import { db } from "../config/db.js"
+import { getUploadsDir } from "../utils/uploads.js"
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url))
-const uploadsDir = path.resolve(__dirname, "../../../backend/uploads")
+const uploadsDir = getUploadsDir();
 
 // Helper: check if uploads directory exists
 if (!fs.existsSync(uploadsDir)) {
